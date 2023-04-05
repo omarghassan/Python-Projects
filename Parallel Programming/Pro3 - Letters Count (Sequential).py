@@ -19,10 +19,15 @@ def main():
 
   for i in "abcdefghijklmnopqrstuvwxyz":
     frequencies[i] = 0
-
+  
+  start = time.time()
+  
   for i in range(1000, 1020):
     count_letters(f"https://www.rfc-editor.org/rfc/rfc{i}.txt", frequencies)
 
+  end = time.time()
   print(json.dumps(frequencies, indent = 4))
 
+  print("Time Taken: ", end-start)
+  
 main()
