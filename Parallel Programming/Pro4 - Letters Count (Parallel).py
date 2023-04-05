@@ -33,6 +33,10 @@ def main():
     t = Thread(target = count_letters, args = (f"https://www.rfc-editor.org/rfc/rfc{i}.txt", frequencies))
 
   end = time.time()
+
+  while(finished_work < 20):
+    time.sleep(0.5)
+  
   print(json.dumps(frequencies, indent = 4))
 
   print("Time Taken: ", end-start)
