@@ -1,0 +1,54 @@
+#Parallel (Multithreading) - With Communication - With Synchronization
+
+import urllib.request
+import json
+import time
+from threading import Thread, Lock
+
+finished_work=0
+mutex = Lock()
+
+def count_letters(url, frequencies):
+
+  response= urllib.request.urlopen(url)
+  text= str(response.read())
+
+  #mutex.acquire()
+  for l in text:
+    letter= l.lower()
+    mutex.acquire()
+
+    if letter in frequencies:
+      frequencies[letter]+=1
+
+    mutex.release()
+  #mutex.release()
+
+  global finished_work
+  finished_work+=1
+
+
+def main():
+  frequencies={}
+  #mutex = Lock()
+
+  for i in 'abcdefghijklmnopqrstuvwxyz':
+    frequencies[i]=0
+    
+  start=time.time()
+  for i in range(1000, 1020):
+    t= Thread( target= count_letters, args= (f"https://www.rfc-editor.org/rfc/rfc{i}.txt", frequencies))
+    t.start()
+  end= time.time()
+  
+  while(True):
+    mutex.acquire()
+    if(finished_work==20):
+      break
+    mutex.release()
+    time.sleep(0.5)
+
+  print(json.dumps(frequencies, indent=4))
+  print("Tame taken: ", end-start)
+
+main()
